@@ -16,32 +16,25 @@ class Parser:
 
     def parse_args(self):
         """ """
-        # print(self._input_args)
         input_arg_dict = {}
         count = 0
 
         # Create a dictionary based on input arguments
         for arg in enumerate(self._input_args):
-            if count < len(self._input_args)-1:
-                try:
-                    input_arg_dict.update({self._input_args[count]: self._input_args[count+1]})
-                except IndexError:
-                    print("Each key argument needs a parameter")
+            try:
+                input_arg_dict.update({self._input_args[count]: self._input_args[count+1]})
+            except IndexError:
+                self._parse_error_status('Error: each key argument needs a parameter')
             count += 2
+            if count > len(self._input_args) - 1:
+                break
 
-        print(input_arg_dict)
-
+        # Search into parser dictionary
         for arg in list(input_arg_dict.keys()):
-
             if arg in self._parse_dict:
                 self._parse_dict[arg](input_arg_dict[arg])
             else:
-
-                print("ERRRRRRROR")
-                sys.help()
-                sys.exit()
-
-
+                self._parse_error_status('Error: ' + arg + ' is not a valid argument')
 
     def _parse_fun_a(self, *argv):
         """ Insert here code you want to execute """
@@ -60,5 +53,11 @@ class Parser:
 
     def _print_help(self):
         """ """
-        print("help")
+        print("Print Help")
+
+    def _parse_error_status(self, error_message):
+        """ """
+        print(error_message + '\n')
+        self._print_help()
+        sys.exit()
 

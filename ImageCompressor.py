@@ -2,18 +2,17 @@
 
 import sys
 from PIL import Image
+from Parser import Parser
 
-
-
-
-class main:
+class Main:
 
     def __init__(self):
-        self._program_name = sys.argv[0]
-        self._input_args = sys.argv[1:]
+        #self._program_name = sys.argv[0]
+        #self._input_args = sys.argv[1:]
         pass
 
     def parse_arguments(self):
+        Parser().parse_args()
         """ """
 
         return
@@ -29,7 +28,7 @@ class main:
         return
 
 
-main().start()
+Main().start()
 
 
 

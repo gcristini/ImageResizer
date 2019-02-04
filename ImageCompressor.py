@@ -11,7 +11,7 @@ class Main:
         pass
 
     @staticmethod
-    def parse_arguments(self):
+    def parse_arguments():
         """ """
         Parser().parse_args()
 

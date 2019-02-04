@@ -45,7 +45,6 @@ class Parser:
             else:
                 self._parse_error_status('Error: ' + arg + ' is not a valid argument')
 
-
     @staticmethod
     def _parse_fun_a(*argv):
         """ Insert here code you want to execute """

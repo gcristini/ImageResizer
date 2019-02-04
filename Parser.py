@@ -17,43 +17,57 @@ class Parser:
     def parse_args(self):
         """ """
         input_arg_dict = {}
-        count = 0
+        key_index_list = []
 
-        # Create a dictionary based on input arguments
-        for arg in enumerate(self._input_args):
-            try:
-                input_arg_dict.update({self._input_args[count]: self._input_args[count+1]})
-            except IndexError:
-                self._parse_error_status('Error: each key argument needs a parameter')
-            count += 2
-            if count > len(self._input_args) - 1:
-                break
+        # First key argument must init with '_'
+        try:
+            self._input_args[0][0] == '-'
+        except:
+            self._parse_error_status("Error: first key argument must init with '-' ")
+
+        # Store index of key arguments which init with '-'
+        for count, input_arg in enumerate(self._input_args):
+            if input_arg[0] == '-':
+                key_index_list.append(count)
+            if count == len(self._input_args)-1:
+                # Store a fake index in order to have the length of array into key_index_list
+                key_index_list.append(count+1)
+
+        # Create dictionary with input "key" and "value" arguments
+        for curr_index, next_index in zip(key_index_list, key_index_list[1:]):
+            input_arg_dict.update({self._input_args[curr_index]: self._input_args[curr_index+1:next_index]})
 
         # Search into parser dictionary
         for arg in list(input_arg_dict.keys()):
             if arg in self._parse_dict:
+                # Execute function of dictionary at arg key
                 self._parse_dict[arg](input_arg_dict[arg])
             else:
                 self._parse_error_status('Error: ' + arg + ' is not a valid argument')
 
-    def _parse_fun_a(self, *argv):
+
+    @staticmethod
+    def _parse_fun_a(*argv):
         """ Insert here code you want to execute """
         print('_parse_fun_a')
         print(argv)
 
-    def _parse_fun_b(self, *argv):
+    @staticmethod
+    def _parse_fun_b(*argv):
         """ Insert here code you want to execute """
         print('_parse_fun_b')
         print(argv)
 
-    def _parse_fun_c(self, *argv):
+    @staticmethod
+    def _parse_fun_c(*argv):
         """ Insert here code you want to execute """
         print('_parse_fun_c')
         print(argv)
 
-    def _print_help(self):
+    @staticmethod
+    def _print_help():
         """ """
-        print("Print Help")
+        print("Print Help: TODO")
 
     def _parse_error_status(self, error_message):
         """ """

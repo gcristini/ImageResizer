@@ -4,16 +4,16 @@ import sys
 from PIL import Image
 from Parser import Parser
 
+
 class Main:
 
     def __init__(self):
-        #self._program_name = sys.argv[0]
-        #self._input_args = sys.argv[1:]
         pass
 
+    @staticmethod
     def parse_arguments(self):
-        Parser().parse_args()
         """ """
+        Parser().parse_args()
 
         return
 

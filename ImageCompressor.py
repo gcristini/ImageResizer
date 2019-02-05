@@ -13,11 +13,12 @@ class ImageCompressor(object):
         self._parse_dict = {
             '-id': self._parse_fun_id,
             '-od': self._parse_fun_od,
-            'if': self._parse_fun_if,
+            '-if': self._parse_fun_if,
             '-w': self._parse_fun_w
         }
 
         # Initialize Parser with input arguments and parser dictionary
+
         self._parser = Parser(input_args=sys.argv[1:],
                               parse_dict=self._parse_dict)
 
@@ -34,12 +35,18 @@ class ImageCompressor(object):
     # ******** Parser Dictionary Functions ******** #
     def _parse_fun_id(self, argv):
         """ Parser function [-id]: set input directory of ImageManager """
-        self._image_manager.input_dir=argv[0]
+        if argv:
+            self._image_manager.input_dir=argv[0]
+        else:
+            pass
 
     def _parse_fun_od(self, argv):
         """ Parser function [-od]: set output directory of ImageManager """
         # Set output directory
-        self._image_manager.output_dir = self._image_manager.input_dir + '/' + argv[0]
+        if argv:
+            self._image_manager.output_dir = self._image_manager.input_dir + '/' + argv[0]
+        else:
+            pass
 
     def _parse_fun_if(self, argv):
         """ Parser Function [-if]: set input files of ImageManager """
@@ -50,7 +57,10 @@ class ImageCompressor(object):
 
     def _parse_fun_w(self, argv):
         """ Parser function [-w]: set weight for compressed output images """
-        self._image_manager.output_image_weight = argv[0]
+        if argv:
+            self._image_manager.output_image_weight = argv[0]
+        else:
+            pass
 
 
 ImageCompressor().main()

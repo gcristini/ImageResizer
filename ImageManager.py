@@ -1,6 +1,7 @@
 from PIL import Image
 import sys
 import os
+import math
 
 
 class ImageManager(object):
@@ -31,11 +32,54 @@ class ImageManager(object):
             (name, ext) = os.path.splitext(file)
 
             if ext in self._allowed_file_extension:
-                self._image_list.append({'name': name, 'ext': ext})
+                # Get the absolute path of each file
+                abs_path = os.path.abspath(self._input_dir + '/' + file)
+                self._image_list.append({'file': file,
+                                         'name': name,
+                                         'ext': ext,
+                                         'abspath': abs_path,
+                                         'size': round(os.path.getsize(abs_path)/(1024**2), 2)
+                                         })
+        #print(self._image_list)
 
-        # print(self._image_list)
+    def _compress_images(self):
+        """ """
+        if self._input_files is None or len(self._input_files) == 0:
+            print ("Specify a file name")  # TODO print decente
+            sys.exit()
+        # Parse all images
+        elif self._input_files == 'all':
+            for image in self._image_list:
+                self._compression_algorithm(image)
+        # Parse specified images only
+        else:
+            for file in self._input_files:
+                for count, image in enumerate(self._image_list):
+                    if file == image['file']:
+                        self._compression_algorithm(image)
+                        break
+                    elif count == len(self._image_list)-1:
+                        print('Warning: ' + file + ' is not in the directory')
+                pass
 
-    def _create_out_directory(self):
+    def _compression_algorithm(self, image):
+        if image['size'] > int(self.output_image_weight):
+            # Calculate scale factor
+            scale_factor = math.sqrt(image['size'] / self._output_image_weight)
+
+            # Open Image and calculate the new size using scale factor
+            tmp_image = Image.open(image['abspath'])
+            new_size = tuple([int(x / scale_factor) for x in list(tmp_image.size)])
+
+            # Resize and save the image into output directory
+            tmp_image = tmp_image.resize(new_size, Image.BILINEAR)
+
+            print('Compressed: ' + image['name'] + '_compressed' + image['ext'])
+            tmp_image.save(self._output_dir + '/' + image['name'] + '_compressed' + image['ext'])
+        else:
+            pass
+
+    def _create_output_directory(self):
         """ Create output files directory, if not exists """
         try:
             os.makedirs(self._output_dir)
@@ -44,7 +88,8 @@ class ImageManager(object):
 
     def start(self):
         self._search_images()
-        self._create_out_directory()
+        self._create_output_directory()
+        self._compress_images()
 
     # **************** Properties **************** #
     @property

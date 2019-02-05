@@ -4,7 +4,7 @@ from ImageManager import ImageManager
 
 class Parser(object):
 
-    def __init__(self, input_args=sys.argv[1], parse_dict=None):
+    def __init__(self, input_args=None, parse_dict=None):
         """ Constructor """
         if parse_dict is None:
             parse_dict = dict()

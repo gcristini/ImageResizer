@@ -1,35 +1,59 @@
 #!/usr/bin/env python
 
 import sys
-from PIL import Image
+import os
 from Parser import Parser
 from ImageManager import ImageManager
 
 
-class Main:
+class ImageCompressor(object):
 
     def __init__(self):
-        pass
+        """ Constructor """
+        self._parse_dict = {
+            '-id': self._parse_fun_id,
+            '-od': self._parse_fun_od,
+            'if': self._parse_fun_if,
+            '-w': self._parse_fun_w
+        }
 
-    def start(self):
+        # Initialize Parser with input arguments and parser dictionary
+        self._parser = Parser(input_args=sys.argv[1:],
+                              parse_dict=self._parse_dict)
+
+        # Initialize ImageManager with "default parameters"
+        self._image_manager = ImageManager(input_dir=os.curdir,
+                                           output_dir=os.curdir + '/out',
+                                           image_weight=1)
+
+    def main(self):
         """ """
-        # Parse input arguments
-        parse=Parser()
+        self._parser.parse_input_args()
+        self._image_manager.start()
+
+    # ******** Parser Dictionary Functions ******** #
+    def _parse_fun_id(self, argv):
+        """ Parser function [-id]: set input directory of ImageManager """
+        self._image_manager.input_dir=argv[0]
+
+    def _parse_fun_od(self, argv):
+        """ Parser function [-od]: set output directory of ImageManager """
+        # Set output directory
+        self._image_manager.output_dir = self._image_manager.input_dir + '/' + argv[0]
+
+    def _parse_fun_if(self, argv):
+        """ Parser Function [-if]: set input files of ImageManager """
+        if len(argv) == 1:
+            self._image_manager.input_files = argv[0]
+        else:
+            self._image_manager.input_files = argv
+
+    def _parse_fun_w(self, argv):
+        """ Parser function [-w]: set weight for compressed output images """
+        self._image_manager.output_image_weight = argv[0]
 
 
-        im=ImageManager()
-
-        parse.parse_input_args()
-        im.start()
-        #
-
-        # print(self.count)
-        # print(self.program_name)
-        # print(self.arguments)
-        return
-
-
-Main().start()
+ImageCompressor().main()
 
 
 

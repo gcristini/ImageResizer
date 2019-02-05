@@ -1,19 +1,16 @@
 import sys
 from ImageManager import ImageManager
 
-class Parser:
 
-    def __init__(self):
-        """ Init """
-        self._program_name = sys.argv[0]
-        self._input_args = sys.argv[1:]
+class Parser(object):
 
-        self._parse_dict = {
-            '-id': self._parse_fun_id,
-            '-od': self._parse_fun_od,
-            'if': self._parse_fun_if,
-            '-w': self._parse_fun_w
-        }
+    def __init__(self, input_args=sys.argv[1], parse_dict=None):
+        """ Constructor """
+        if parse_dict is None:
+            parse_dict = dict()
+
+        self._input_args = input_args
+        self._parse_dict = parse_dict
 
     def parse_input_args(self):
         """ Main function """
@@ -22,10 +19,10 @@ class Parser:
 
         # First key argument must init with '_'
         if self._input_args:
-           try:
-               self._input_args[0][0] == '-'
-           except:
-               self._parse_error_status("Error: first key argument must init with '-' ")
+            try:
+                self._input_args[0][0] == '-'
+            except:
+                self._parse_error_status("Error: first key argument must init with '-' ")
 
         # Store index of key arguments which init with '-'
         for count, input_arg in enumerate(self._input_args):
@@ -46,31 +43,6 @@ class Parser:
                 self._parse_dict[arg](input_arg_dict[arg])
             else:
                 self._parse_error_status('Error: ' + arg + ' is not a valid argument')
-
-    def _parse_fun_id(self, *argv):
-        """ Insert here code you want to execute """
-        print(self._parse_fun_id.__name__)
-        #print(argv)
-
-        ImageManager.input_dir = argv[0]
-
-    def _parse_fun_od(self, *argv):
-        """ Insert here code you want to execute """
-        print(self._parse_fun_od.__name__)
-        #print(argv)
-        ImageManager.output_dir = argv[0]
-
-    def _parse_fun_if(self, *argv):
-        """ Insert here code you want to execute """
-        print(self._parse_fun_if.__name__)
-        print(argv)
-        #ImageManager.input_di
-
-    def _parse_fun_w(self, *argv):
-        """ Insert here code you want to execute """
-        print(self._parse_fun_w.__name__)
-        print(argv)
-        ImageManager.output_image_weight = argv
 
     @staticmethod
     def _print_help():

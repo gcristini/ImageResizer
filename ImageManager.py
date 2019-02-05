@@ -3,22 +3,28 @@ import sys
 import os
 
 
-class ImageManager:
+class ImageManager(object):
 
-    def __init__(self):
+    def __init__(self, input_dir=None, output_dir=None, image_weight=None, input_files=None):
         """ Constructor """
         self._allowed_file_extension = ('.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.png')
 
-        self._input_dir = os.curdir
-        self._output_dir = self._input_dir + '/' + 'out'
-        self._output_image_weight = 1  # [MB]
+        self._input_dir = input_dir
+        self._output_dir = output_dir
+        self._input_files = input_files
+        self._output_image_weight = image_weight  # [MB]
 
         self._image_list = []
 
     def _search_images(self):
         """ Search for all images into current directory """
         # List all files into current directory
-        files_into_dir = os.listdir(self._input_dir)
+        if os.path.exists(self._input_dir):
+            files_into_dir = os.listdir(self._input_dir)
+        else:
+            # TODO: print error and help
+            sys.exit()
+            pass
 
         # Search for each file with allowed extension and store them into list of dictionaries
         for file in files_into_dir:
@@ -36,6 +42,10 @@ class ImageManager:
         except FileExistsError:
             pass
 
+    def start(self):
+        self._search_images()
+        self._create_out_directory()
+
     # **************** Properties **************** #
     @property
     def input_dir(self):
@@ -52,7 +62,14 @@ class ImageManager:
     @output_dir.setter
     def output_dir(self, out_dir):
         self._output_dir = out_dir
-        print(self._output_dir)
+
+    @property
+    def input_files(self):
+        return self._input_files
+
+    @input_files.setter
+    def input_files(self, files):
+        self._input_files = files
 
     @property
     def output_image_weight(self):
@@ -62,9 +79,7 @@ class ImageManager:
     def output_image_weight(self, image_weight):
         self._output_image_weight = image_weight
 
-    def start(self):
-        self._search_images()
-        self._create_out_directory()
+
 
     # def _directory_tree(self):
     #     current_dir=os.curdir

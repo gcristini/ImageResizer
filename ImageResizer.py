@@ -8,7 +8,11 @@ from Help import Help
 
 
 class ImageResizer(object):
+    """ """
 
+    # ************************************************* #
+    # **************** Private Methods **************** #
+    # ************************************************* #
     def __init__(self):
         """ Constructor """
         self._parse_dict = {
@@ -25,17 +29,9 @@ class ImageResizer(object):
 
         # Initialize ImageManager with "default parameters"
         self._image_manager = ImageManager(input_dir=os.curdir,
-                                           output_dir=os.curdir + '/out',
+                                           output_dir=os.curdir + '/Out',
                                            image_weight=1,
                                            input_files='all')
-
-    def main(self):
-        """ """
-        # Parse input arguments
-        self._parser.parse_input_args()
-
-        # Run image manager
-        self._image_manager.main()
 
     # ******** Parser Dictionary Functions ******** #
     def _parse_fun_id(self, argv):
@@ -73,5 +69,19 @@ class ImageResizer(object):
         # Print help
         Help().print_help()
 
+    # ************************************************ #
+    # **************** Public Methods **************** #
+    # ************************************************ #
+    def main(self):
+        """ """
+        # Parse input arguments
+        self._parser.parse_input_args()
+
+        # Run image manager
+        self._image_manager.main()
+
+
+""" 
+"""
 
 ImageResizer().main()

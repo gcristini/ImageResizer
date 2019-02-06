@@ -1,2 +1,7 @@
 __pycache__/
 .idea
+build
+
+# Ignore each file into dist except ImageResize.exe
+dist/*
+!dist/ImageResizer.exe

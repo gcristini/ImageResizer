@@ -6,7 +6,11 @@ from Help import Help
 
 
 class ImageManager(object):
+    """ """
 
+    # ************************************************* #
+    # **************** Private Methods **************** #
+    # ************************************************* #
     def __init__(self, input_dir=None, output_dir=None, image_weight=None, input_files=None):
         """ Constructor """
         self._allowed_file_extension = ('.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.png')
@@ -101,6 +105,9 @@ class ImageManager(object):
         except FileExistsError:
             pass
 
+    # ************************************************ #
+    # **************** Public Methods **************** #
+    # ************************************************ #
     def main(self):
         """ """
         # Search for images into directory
@@ -112,7 +119,9 @@ class ImageManager(object):
         # Resize images
         self._resize_images()
 
+    # ******************************************** #
     # **************** Properties **************** #
+    # ******************************************** #
     @property
     def input_dir(self):
         return self._input_dir

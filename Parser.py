@@ -1,8 +1,8 @@
-import sys
-from ImageManager import ImageManager
+from Help import Help
 
 
 class Parser(object):
+    """ Class Parser """
 
     def __init__(self, input_args=None, parse_dict=None):
         """ Constructor """
@@ -17,12 +17,12 @@ class Parser(object):
         input_arg_dict = {}
         key_index_list = []
 
-        # First key argument must init with '_'
+        # First key argument must init with '-'
         if self._input_args:
-            try:
-                self._input_args[0][0] == '-'
-            except:
-                self._parse_error_status("Error: first key argument must init with '-' ")
+            if self._input_args[0][0] != '-':
+                Help().error_message("First key argument must init with '-' ")
+            else:
+                pass
 
         # Store index of key arguments which init with '-'
         for count, input_arg in enumerate(self._input_args):
@@ -42,16 +42,6 @@ class Parser(object):
                 # Execute function of dictionary at arg key
                 self._parse_dict[arg](input_arg_dict[arg])
             else:
-                self._parse_error_status('Error: ' + arg + ' is not a valid argument')
+                Help().error_message("'" + arg + "'" + " is not a valid argument")
 
-    @staticmethod
-    def _print_help():
-        """ """
-        print("Print Help: TODO")
-
-    def _parse_error_status(self, error_message):
-        """ """
-        print(error_message + '\n')
-        self._print_help()
-        sys.exit()
 

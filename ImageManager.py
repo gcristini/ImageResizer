@@ -1,7 +1,8 @@
-from PIL import Image
-import sys
 import os
 import math
+
+from PIL import Image
+from Help import Help
 
 
 class ImageManager(object):
@@ -14,17 +15,18 @@ class ImageManager(object):
         self._output_dir = output_dir
         self._input_files = input_files
         self._output_image_weight = image_weight  # [MB]
+        self._appended_string = "_resized"
 
         self._image_list = []
 
     def _search_images(self):
         """ Search for all images into current directory """
         # List all files into current directory
+        files_into_dir = []
         if os.path.exists(self._input_dir):
             files_into_dir = os.listdir(self._input_dir)
         else:
-            # TODO: print error and help
-            sys.exit()
+            Help().error_message("Input directory not valid")
             pass
 
         # Search for each file with allowed extension and store them into list of dictionaries
@@ -40,30 +42,43 @@ class ImageManager(object):
                                          'abspath': abs_path,
                                          'size': round(os.path.getsize(abs_path)/(1024**2), 2)
                                          })
-        #print(self._image_list)
+            else:
+                # Nothing
+                pass
+        # If there's no images into directory
+        if not self._image_list:
+            Help().warning_message("No image into directory")
+        else:
+            # Nothing
+            pass
 
-    def _compress_images(self):
-        """ """
+    def _resize_images(self):
+        """ Resize images """
         if self._input_files is None or len(self._input_files) == 0:
-            print ("Specify a file name")  # TODO print decente
-            sys.exit()
+            Help().error_message("No input file specified")
         # Parse all images
-        elif self._input_files == 'all':
+        elif 'all' in self._input_files:
             for image in self._image_list:
-                self._compression_algorithm(image)
+                self._resizing_algorithm(image)
         # Parse specified images only
         else:
             for file in self._input_files:
                 for count, image in enumerate(self._image_list):
                     if file == image['file']:
-                        self._compression_algorithm(image)
+                        self._resizing_algorithm(image)
                         break
                     elif count == len(self._image_list)-1:
-                        print('Warning: ' + file + ' is not in the directory')
+                        Help().warning_message(file + ' is not in the directory')
+                    else:
+                        # nothing
+                        pass
                 pass
 
-    def _compression_algorithm(self, image):
+    def _resizing_algorithm(self, image):
         if image['size'] > int(self.output_image_weight):
+            # Print which file is under resizing
+            print("-Resizing " + image['file'])
+
             # Calculate scale factor
             scale_factor = math.sqrt(image['size'] / self._output_image_weight)
 
@@ -73,10 +88,10 @@ class ImageManager(object):
 
             # Resize and save the image into output directory
             tmp_image = tmp_image.resize(new_size, Image.BILINEAR)
-
-            print('Compressed: ' + image['name'] + '_compressed' + image['ext'])
             tmp_image.save(self._output_dir + '/' + image['name'] + '_compressed' + image['ext'])
+            print('--Saved: ' + image['name'] + self._appended_string + image['ext'])
         else:
+            # Nothing
             pass
 
     def _create_output_directory(self):
@@ -86,10 +101,16 @@ class ImageManager(object):
         except FileExistsError:
             pass
 
-    def start(self):
+    def main(self):
+        """ """
+        # Search for images into directory
         self._search_images()
+
+        # Create output directory
         self._create_output_directory()
-        self._compress_images()
+
+        # Resize images
+        self._resize_images()
 
     # **************** Properties **************** #
     @property
@@ -124,8 +145,6 @@ class ImageManager(object):
     def output_image_weight(self, image_weight):
         self._output_image_weight = image_weight
 
-
-
     # def _directory_tree(self):
     #     current_dir=os.curdir
     #     root_list=[]
@@ -158,16 +177,10 @@ class ImageManager(object):
     #             print('{}{}'.format(subindent, f))
 
 
-#ImageManager().start()
 
-# ImageManager()._create_out_directory()
 
-# image = Image.open("Image.jpg")
-# new_size = tuple([int(x/2) for x in list(image.size)])
-# print(new_size)
-#
-# image.resize(new_size)
-# image.save('saved.jpg')
-# im
-#
-# #image.resize(image.size/2)
+
+
+
+
+

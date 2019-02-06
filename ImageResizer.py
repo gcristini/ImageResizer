@@ -30,7 +30,7 @@ class ImageResizer(object):
         # Initialize ImageManager with "default parameters"
         self._image_manager = ImageManager(input_dir=os.curdir,
                                            output_dir=os.curdir + '/Out',
-                                           image_weight=1,
+                                           image_size=1,
                                            input_files='all')
 
     # ******** Parser Dictionary Functions ******** #
@@ -59,7 +59,7 @@ class ImageResizer(object):
     def _parse_fun_w(self, argv):
         """ Parser function [-w]: set weight for compressed output images """
         if argv:
-            self._image_manager.output_image_weight = argv[0]
+            self._image_manager.output_image_size = argv[0]
         else:
             pass
 

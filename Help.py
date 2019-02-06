@@ -31,9 +31,12 @@ class Help(object):
 
     @staticmethod
     def print_help():
+        print('\n' + '*'*46)
+        print('****'*3 + ' '*9 + 'HELP' + ' '*9 + '****'*3)
+        print('*' * 46)
 
         # NAME
-        print("\nNAME: ")
+        print("NAME: ")
         print('\t' + sys.argv[0] + " - Resize images to reduce filesize to a specified value")
 
         # SYNOPSIS

@@ -20,7 +20,8 @@ class ImageResizer(object):
             '-od': self._parse_fun_od,
             '-if': self._parse_fun_if,
             '-w': self._parse_fun_w,
-            '-h': self._parse_fun_h
+            '-h': self._parse_fun_h,
+            '-s': self._parse_fun_s
         }
 
         # Initialize Parser with input arguments and parser dictionary
@@ -31,7 +32,8 @@ class ImageResizer(object):
         self._image_manager = ImageManager(input_dir=os.curdir,
                                            output_dir=os.curdir + '/Out',
                                            image_size=1,
-                                           input_files='all')
+                                           input_files='all',
+                                           include_subdir=False)
 
     # ******** Parser Dictionary Functions ******** #
     def _parse_fun_id(self, argv):
@@ -57,11 +59,15 @@ class ImageResizer(object):
             pass
 
     def _parse_fun_w(self, argv):
-        """ Parser function [-w]: set weight for compressed output images """
+        """ Parser function [-w]: set output image size of ImageManager """
         if argv:
             self._image_manager.output_image_size = argv[0]
         else:
             pass
+
+    def _parse_fun_s(self, argv):
+        """ Parser function [-s]: set include_subdir flag of ImageManager """
+        self._image_manager.include_subdir = True
 
     @staticmethod
     def _parse_fun_h(argv):

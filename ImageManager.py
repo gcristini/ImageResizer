@@ -3,6 +3,7 @@ import math
 
 from PIL import Image
 from Help import Help
+import sys
 
 
 class ImageManager(object):
@@ -11,7 +12,7 @@ class ImageManager(object):
     # ************************************************* #
     # **************** Private Methods **************** #
     # ************************************************* #
-    def __init__(self, input_dir=None, output_dir=None, image_size=None, input_files=None):
+    def __init__(self, input_dir=None, output_dir=None, image_size=None, input_files=None, include_subdir=None):
         """ Constructor """
         self._allowed_file_extension = ('.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.png')
 
@@ -20,6 +21,7 @@ class ImageManager(object):
         self._input_files = input_files
         self._output_image_size = image_size  # [MB]
         self._appended_string = "_resized"
+        self._include_subdir = include_subdir
 
         self._image_list = []
 
@@ -46,6 +48,7 @@ class ImageManager(object):
                                              'name': name,
                                              'ext': ext,
                                              'abspath': abs_path,
+                                             'relroot': '',
                                              'size': size
                                              })
                 else:
@@ -61,6 +64,38 @@ class ImageManager(object):
         else:
             # Nothing
             pass
+
+    def _search_images_sub(self):
+        """ Search for all images into current directory and subdirectories"""
+        # List all files into current directory and subdirectories
+        if os.path.exists(self._input_dir):
+            for (root, _, files) in os.walk(self._input_dir):
+                for file in files:
+                    (name, ext) = os.path.splitext(file)
+                    if ext in self._allowed_file_extension:
+                        # Get the absolute path of each file
+                        abs_path = (root + '/' + file)
+                        relroot = root.replace(self._input_dir, '', 1)
+                        self._image_list.append({'file': file,
+                                                 'name': name,
+                                                 'ext': ext,
+                                                 'relroot': relroot,
+                                                 'abspath': abs_path,
+                                                 'size': round(os.path.getsize(abs_path) / (1024 ** 2), 2)
+                                                 })
+                    else:
+                        # Nothing
+                        pass
+
+            # If there's no images into directory
+            if not self._image_list:
+                Help().warning_message("No image into directory")
+            else:
+                # Nothing
+                pass
+        else:
+            Help().error_message("Input directory not valid")
+        pass
 
     def _resize_images(self):
         """ Resize images """
@@ -98,11 +133,18 @@ class ImageManager(object):
 
             # Resize and save the image into output directory
             tmp_image = tmp_image.resize(new_size, Image.BILINEAR)
-            tmp_image.save(self._output_dir + '/' + image['name'] + '_compressed' + image['ext'])
+            tmp_image.save(self._output_dir + image['relroot'] + '/' + image['name'] + '_compressed' + image['ext'])
             print('--Saved: ' + image['name'] + self._appended_string + image['ext'])
         else:
             # Nothing
             pass
+
+    def _create_output_directory_sub(self):
+        for image in self._image_list:
+            try:
+                os.makedirs(self._output_dir + image['relroot'])
+            except FileExistsError:
+                pass
 
     def _create_output_directory(self):
         """ Create output files directory, if not exists """
@@ -116,11 +158,18 @@ class ImageManager(object):
     # ************************************************ #
     def main(self):
         """ """
-        # Search for images into directory
-        self._search_images()
+        if self._include_subdir == True:
+            # Search for images into directory and subdirectories
+            self._search_images_sub()
 
-        # Create output directory
-        self._create_output_directory()
+            # Create output directory with subdirectories
+            self._create_output_directory_sub()
+        else:
+            # Search for images into directory
+            self._search_images()
+
+            # Create output directory
+            self._create_output_directory()
 
         # Resize images
         self._resize_images()
@@ -153,49 +202,18 @@ class ImageManager(object):
         self._input_files = files
 
     @property
+    def include_subdir(self):
+        return self._include_subdir
+
+    @include_subdir.setter
+    def include_subdir(self, boolean):
+        self._include_subdir = boolean
+
+    @property
     def output_image_size(self):
         return self._output_image_size
 
     @output_image_size.setter
     def output_image_size(self, image_size):
         self._output_image_size = image_size
-
-    # def _directory_tree(self):
-    #     current_dir=os.curdir
-    #     root_list=[]
-    #     dirs_list=[]
-    #     files_list=[]
-    #
-    #     print(current_dir)
-    #
-    #     for root, dirs, files in os.walk(current_dir):
-    #         root_list.append(root)
-    #         dirs_list.append(dirs_list)
-    #         files_list.append(files)
-    #
-    #     print("ROOT")
-    #     print(root_list)
-    #
-    #     print("\n DIRS")
-    #     print(dirs_list)
-    #
-    #     print("\n FILES")
-    #     print(files_list)
-    #
-    #     startpath=current_dir
-    #     for root, dirs, files in os.walk(startpath):
-    #         level = root.replace(startpath, '').count(os.sep)
-    #         indent = ' ' * 4 * (level)
-    #         print('{}{}/'.format(indent, os.path.basename(root)))
-    #         subindent = ' ' * 4 * (level + 1)
-    #         for f in files:
-    #             print('{}{}'.format(subindent, f))
-
-
-
-
-
-
-
-
 

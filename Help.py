@@ -46,6 +46,7 @@ class Help(object):
               '[-od <output directory>] ' +
               '[-if <input files>] ' +
               '[-w <filesize>] ' +
+              '[-s <include subdirectories>]'
               '[-h <help>] ')
 
         # DESCRIPTION
@@ -66,6 +67,9 @@ class Help(object):
 
         print("\t-w \tfile size:")
         print("\t\t\t Specify the file size in MB of the resized images. DEFAULT: 1")
+
+        print("\t-s \tfile size:")
+        print("\t\t\t Include subfolders into search. DEFAULT: False")
 
         print("\t-h \tprint help:")
         print("\t\t\t Print Help")
